@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No-Spend Challenges — PennyPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand">
+          <div class="brand-icon">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+          </div>
+          <span>Penny<span class="accent">Pilot</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="transactions.html" class="nav-link">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transactions</span>
+        </a>
+
+        <div class="nav-section-title">Planning & Growth</div>
+        <a href="budgets.html" class="nav-link">
+          <i data-lucide="wallet"></i>
+          <span>Budget Planner</span>
+        </a>
+        <a href="analytics.html" class="nav-link">
+          <i data-lucide="pie-chart"></i>
+          <span>Analytics & Reports</span>
+        </a>
+        <a href="goals.html" class="nav-link">
+          <i data-lucide="target"></i>
+          <span>Savings Goals</span>
+        </a>
+        <a href="challenges.html" class="nav-link active">
+          <i data-lucide="shield-check"></i>
+          <span>No-Spend Challenges</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" onclick="seedDemoDataForUser()" style="width: 100%; border-color: rgba(139, 92, 246, 0.4); font-size: 0.8rem;">
+          <i data-lucide="database" style="width: 14px; height: 14px;"></i> Load Sample Data
+        </button>
+
+        <div class="user-profile-pill">
+          <div class="user-avatar" id="sidebarUserAvatar">ST</div>
+          <div class="user-meta">
+            <div class="user-name" id="sidebarUserName">Student</div>
+            <div class="user-role">B.Tech CSE Student</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="logoutUser()" title="Logout" style="padding: 0.35rem; border: none; color: var(--text-muted);">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="btn btn-outline btn-icon-only mobile-menu-btn" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <h1 class="page-title">No-Spend Challenges</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-primary btn-sm" onclick="openModal('challengeModal')">
+            <i data-lucide="plus" style="width: 15px; height: 15px;"></i> Launch Challenge
+          </button>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- Informational Banner -->
+        <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, rgba(20,27,45,0.9), rgba(14,20,38,0.9)); border-color: rgba(139,92,246,0.25);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <span class="badge badge-warning" style="margin-bottom: 0.4rem;">Feature 4: Spending Discipline</span>
+              <h2 style="font-size: 1.35rem;">Real-Time Habit Building</h2>
+              <p style="font-size: 0.88rem; max-width: 600px; margin-top: 0.25rem;">
+                Unlike static checklists, PennyPilot checks actual transaction records created within your active challenge window. If you log a purchase that exceeds your target, the challenge automatically notes the breach.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="openModal('challengeModal'); selectPreset('food');">
+                🍕 Zero Food Delivery
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="openModal('challengeModal'); selectPreset('weekend');">
+                ☕ Weekend Cap < ₹500
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenges Grid -->
+        <div class="grid-3" id="challengesGrid">
+          <!-- Populated via challenges.js -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Launch Challenge Modal -->
+  <div class="modal-backdrop" id="challengeModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Launch No-Spend Challenge</h3>
+        <button class="modal-close" onclick="closeModal('challengeModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="challengeForm">
+        <div class="modal-body">
+          <div style="margin-bottom: 1rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin-bottom: 0.4rem;">QUICK PRESETS:</div>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="selectPreset('food')">Zero Food Delivery</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="selectPreset('weekend')">Weekend &lt; ₹500</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="selectPreset('shopping')">Zero Online Shopping</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="challengeTitle">Challenge Title</label>
+            <input type="text" id="challengeTitle" class="form-control" placeholder="e.g. 7-Day Canteen & Swiggy Fast" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="challengeDesc">Challenge Goal / Rules</label>
+            <textarea id="challengeDesc" class="form-control" rows="2" placeholder="Eat at mess or cook. No delivery orders."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="challengeCategory">Tracked Category</label>
+            <select id="challengeCategory" class="form-control" required>
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Shopping">Shopping & Lifestyle</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="All Non-Essentials">All Non-Essentials (Wants)</option>
+              <option value="Overall">Overall Outflows</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="challengeTarget">Spending Cap Allowed (INR)</label>
+            <div class="input-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="challengeTarget" class="form-control has-prefix" min="0" step="50" value="0" placeholder="0 for strict zero-spend">
+            </div>
+            <span style="font-size: 0.76rem; color: var(--text-dim); margin-top: 0.2rem;">Leave ₹0 for a strict No-Spend challenge.</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label" for="challengeStart">Start Date</label>
+              <input type="date" id="challengeStart" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="challengeEnd">End Date</label>
+              <input type="date" id="challengeEnd" class="form-control" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('challengeModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Start Challenge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/challenges.js"></script>
+</body>
+</html>

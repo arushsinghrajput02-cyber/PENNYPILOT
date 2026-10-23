@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions — PennyPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand">
+          <div class="brand-icon">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+          </div>
+          <span>Penny<span class="accent">Pilot</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="transactions.html" class="nav-link active">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transactions</span>
+        </a>
+
+        <div class="nav-section-title">Planning & Growth</div>
+        <a href="budgets.html" class="nav-link">
+          <i data-lucide="wallet"></i>
+          <span>Budget Planner</span>
+        </a>
+        <a href="analytics.html" class="nav-link">
+          <i data-lucide="pie-chart"></i>
+          <span>Analytics & Reports</span>
+        </a>
+        <a href="goals.html" class="nav-link">
+          <i data-lucide="target"></i>
+          <span>Savings Goals</span>
+        </a>
+        <a href="challenges.html" class="nav-link">
+          <i data-lucide="shield-check"></i>
+          <span>No-Spend Challenges</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" onclick="seedDemoDataForUser()" style="width: 100%; border-color: rgba(139, 92, 246, 0.4); font-size: 0.8rem;">
+          <i data-lucide="database" style="width: 14px; height: 14px;"></i> Load Sample Data
+        </button>
+
+        <div class="user-profile-pill">
+          <div class="user-avatar" id="sidebarUserAvatar">ST</div>
+          <div class="user-meta">
+            <div class="user-name" id="sidebarUserName">Student</div>
+            <div class="user-role">B.Tech CSE Student</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="logoutUser()" title="Logout" style="padding: 0.35rem; border: none; color: var(--text-muted);">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="btn btn-outline btn-icon-only mobile-menu-btn" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <h1 class="page-title">Transaction Ledger</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-secondary btn-sm" id="exportCsvBtn">
+            <i data-lucide="download" style="width: 15px; height: 15px;"></i> Export CSV
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+            <i data-lucide="plus" style="width: 15px; height: 15px;"></i> Add Transaction
+          </button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Search & Filter Bar -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1.2fr 1fr 1fr; gap: 0.75rem;">
+            <input 
+              type="text" 
+              id="searchQuery" 
+              class="form-control" 
+              placeholder="Search by description or category..."
+            >
+
+            <select id="typeFilter" class="form-control">
+              <option value="all">All Types</option>
+              <option value="expense">Expenses Only</option>
+              <option value="income">Income Only</option>
+            </select>
+
+            <select id="categoryFilter" class="form-control">
+              <option value="all">All Categories</option>
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Hostel & Rent">Hostel & Rent</option>
+              <option value="Books & Academics">Books & Academics</option>
+              <option value="Transport & Travel">Transport & Travel</option>
+              <option value="Tech & Gadgets">Tech & Gadgets</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Pocket Money / Allowance">Pocket Money / Allowance</option>
+              <option value="Part-time / Freelance">Part-time / Freelance</option>
+            </select>
+
+            <select id="classificationFilter" class="form-control">
+              <option value="all">All Tags</option>
+              <option value="need">Needs (Essentials)</option>
+              <option value="want">Wants (Discretionary)</option>
+              <option value="saving">Savings</option>
+            </select>
+
+            <select id="sortFilter" class="form-control">
+              <option value="date_desc">Newest First</option>
+              <option value="date_asc">Oldest First</option>
+              <option value="amount_desc">Highest Amount</option>
+              <option value="amount_asc">Lowest Amount</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Transactions Table Card -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Tag</th>
+                  <th style="text-align: right;">Amount</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsTableBody">
+                <!-- Populated via transactions.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-top: 1px solid var(--border-subtle); background: rgba(14, 20, 36, 0.4);">
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="paginationInfo">
+              Loading records...
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" id="paginationPrev" disabled>
+                <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
+              </button>
+              <button class="btn btn-secondary btn-sm" id="paginationNext" disabled>
+                Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Transaction Modal -->
+  <div class="modal-backdrop" id="transactionModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="transactionModalTitle">Add Transaction</h3>
+        <button class="modal-close" onclick="closeModal('transactionModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="transactionForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Classification</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+              <select id="txType" class="form-control" required>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+              <select id="txClassification" class="form-control" required>
+                <option value="need">Need (Essential)</option>
+                <option value="want">Want (Discretionary)</option>
+                <option value="saving">Saving / Investment</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="txAmount">Amount (INR)</label>
+            <div class="input-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="txAmount" class="form-control has-prefix" min="1" step="0.5" placeholder="e.g. 250" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="txCategory">Category</label>
+            <select id="txCategory" class="form-control" required>
+              <option value="Food & Dining">Food & Dining (Mess, Canteen, Cafe)</option>
+              <option value="Hostel & Rent">Hostel & Rent</option>
+              <option value="Books & Academics">Books & Academics</option>
+              <option value="Transport & Travel">Transport & Travel</option>
+              <option value="Tech & Gadgets">Tech & Gadgets</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Shopping">Shopping & Lifestyle</option>
+              <option value="Healthcare">Healthcare & Pharmacy</option>
+              <option value="Pocket Money / Allowance">Pocket Money / Allowance</option>
+              <option value="Part-time / Freelance">Part-time / Freelance Stipend</option>
+              <option value="Scholarship / Grants">Scholarship / Grants</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="txDesc">Description</label>
+            <input type="text" id="txDesc" class="form-control" placeholder="e.g. Canteen lunch with batchmates">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="txDate">Transaction Date</label>
+            <input type="date" id="txDate" class="form-control">
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+            <input type="checkbox" id="txRecurring" style="accent-color: var(--color-primary); width: 16px; height: 16px;">
+            <label for="txRecurring" style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+              Tag as recurring monthly payment
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('transactionModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-backdrop" id="deleteConfirmModal">
+    <div class="modal-container" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--color-danger);">Delete Transaction</h3>
+        <button class="modal-close" onclick="closeModal('deleteConfirmModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.92rem; color: var(--text-muted);">
+          Are you sure you want to permanently remove this transaction? This will update your balances immediately.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('deleteConfirmModal')">Cancel</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Confirm Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/transactions.js"></script>
+</body>
+</html>

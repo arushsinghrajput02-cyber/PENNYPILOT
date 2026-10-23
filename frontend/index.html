@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PennyPilot — Smart Student Finance Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .landing-header {
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      background: rgba(11, 16, 32, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+    .landing-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .landing-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+    .landing-links a {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .landing-links a:hover {
+      color: var(--text-main);
+    }
+    .hero-section {
+      padding: 5rem 0 4rem 0;
+      text-align: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #C4B5FD;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      max-width: 820px;
+      margin: 0 auto 1.5rem auto;
+    }
+    .hero-title span.glow {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 1.15rem;
+      max-width: 640px;
+      margin: 0 auto 2.5rem auto;
+      color: var(--text-muted);
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+      margin-bottom: 5rem;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      transition: all var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 92, 246, 0.4);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+    .feature-icon-box {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    .feature-icon-box.green {
+      background: var(--color-secondary-light);
+      color: var(--color-secondary);
+    }
+    .feature-icon-box.yellow {
+      background: var(--color-warning-light);
+      color: var(--color-warning);
+    }
+    .feature-card h3 {
+      font-size: 1.25rem;
+    }
+    .feature-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .preview-card {
+      background: linear-gradient(180deg, #161D32 0%, #0E1426 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      max-width: 960px;
+      margin: 0 auto 5rem auto;
+      text-align: left;
+    }
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 0;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+    @media (max-width: 860px) {
+      .hero-title { font-size: 2.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .landing-links { display: none; }
+      .preview-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Landing Header -->
+  <header class="landing-header">
+    <div class="container landing-nav">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">
+          <i data-lucide="compass" style="width: 22px; height: 22px;"></i>
+        </div>
+        <span>Penny<span class="accent">Pilot</span></span>
+      </a>
+
+      <ul class="landing-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#survival">Survival Mode</a></li>
+        <li><a href="#coach">Smart Coach</a></li>
+        <li><a href="#tech">Tech Stack</a></li>
+      </ul>
+
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <button class="btn btn-outline btn-sm" onclick="demoLogin()">
+          <i data-lucide="play" style="width: 14px; height: 14px;"></i> Try Live Demo
+        </button>
+        <a href="login.html" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-badge">
+        <i data-lucide="graduation-cap" style="width: 15px; height: 15px;"></i>
+        Smart Personal Finance Built for College Students
+      </div>
+
+      <h1 class="hero-title">
+        Never Run Out of Pocket Money <br>Before the <span class="glow">Month Ends</span>
+      </h1>
+
+      <p class="hero-desc">
+        PennyPilot helps engineering and university students track allowances, conquer month-end survival crunch, separate Needs from Wants, and achieve dream savings goals.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" onclick="demoLogin()">
+          <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+          Explore Demo Dashboard
+        </button>
+        <a href="register.html" class="btn btn-secondary btn-lg">
+          Create Free Student Account
+        </a>
+      </div>
+
+      <!-- Live Teaser Preview Card -->
+      <div class="preview-card" id="survival">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="brand-icon" style="width: 32px; height: 32px;">
+              <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i>
+            </div>
+            <div>
+              <h4 style="font-size: 1.1rem;">Survival Mode Engine</h4>
+              <p style="font-size: 0.8rem; margin: 0;">Dynamic Daily Budgeting to Prevent Mid-Month Cash Depletion</p>
+            </div>
+          </div>
+          <span class="badge badge-success">Live Engine</span>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 1.5rem;">
+          <div class="stat-card card" style="padding: 1.25rem;">
+            <span class="stat-label">Net Available Balance</span>
+            <div class="stat-value" style="color: var(--color-secondary);">₹12,450.00</div>
+            <span class="stat-footer">Total Income − Outflows</span>
+          </div>
+
+          <div class="stat-card card" style="padding: 1.25rem;">
+            <span class="stat-label">Emergency Buffer</span>
+            <div class="stat-value" style="color: #FBBF24;">₹2,500.00</div>
+            <span class="stat-footer">Locked for exam fees & mess</span>
+          </div>
+
+          <div class="stat-card card" style="padding: 1.25rem;">
+            <span class="stat-label">Suggested Daily Limit</span>
+            <div class="stat-value" style="color: var(--color-primary);">₹415.00<span style="font-size: 0.85rem; color: var(--text-dim); font-weight: 500;">/day</span></div>
+            <span class="stat-footer">Spendable balance ÷ Remaining days</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-dim); margin: 0;">
+          💡 <em>"Reducing optional cafeteria snacks and Zomato by just ₹40/day saves ₹1,200/month towards your new coding laptop."</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container" id="features" style="padding-bottom: 4rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Engineered for Students</span>
+      <h2>Real Solutions for Campus Living</h2>
+      <p style="max-width: 550px; margin: 0.5rem auto 0 auto;">No generic enterprise corporate finance templates. PennyPilot addresses real hostel, mess, and college spending realities.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card" id="coach">
+        <div class="feature-icon-box">
+          <i data-lucide="zap"></i>
+        </div>
+        <h3>Smart Spend Coach</h3>
+        <p>A deterministic, rule-based spending intelligence engine comparing month-over-month category surges, budget caps, and daily micro-savings opportunities.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon-box green">
+          <i data-lucide="pie-chart"></i>
+        </div>
+        <h3>Needs vs Wants Classifier</h3>
+        <p>Categorize transactions into Needs, Wants, and Savings to observe healthy 50/30/20 proportions and curb non-essential weekend splurges.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon-box yellow">
+          <i data-lucide="target"></i>
+        </div>
+        <h3>Target Savings Goals</h3>
+        <p>Set concrete milestones like a MacBook for coding, semester exam fees, or a graduation trip with transparent deposit tracking and days remaining.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i data-lucide="shield-check"></i>
+        </div>
+        <h3>No-Spend Challenges</h3>
+        <p>Launch 7-day or weekend challenges like "Zero Food Delivery" or "Weekend Cap < ₹500" tracked strictly against verified transaction entries.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card">
+        <div class="feature-icon-box green">
+          <i data-lucide="trending-up"></i>
+        </div>
+        <h3>Month-End Forecast</h3>
+        <p>Transparent run-rate projections showing projected end-of-month spend, average daily burn, and confidence indicators without black-box hype.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card">
+        <div class="feature-icon-box yellow">
+          <i data-lucide="activity"></i>
+        </div>
+        <h3>Financial Health Score</h3>
+        <p>An objective 0 to 100 rating based on budget adherence, savings rate, needs vs wants discipline, and emergency cash reserves.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Section -->
+  <section class="container" id="tech" style="padding-bottom: 5rem;">
+    <div class="card" style="padding: 2.5rem; text-align: center;">
+      <span class="badge badge-primary" style="margin-bottom: 0.5rem;">B.Tech Computer Science Capstone Architecture</span>
+      <h3>Built with Modern, Reliable Engineering Standards</h3>
+      <p style="max-width: 650px; margin: 0.5rem auto 2rem auto;">Modular, decoupled architecture pairing a blazing-fast Python FastAPI REST API with lightweight, framework-free Vanilla JS and Chart.js.</p>
+
+      <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
+        <span class="badge badge-info" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Python 3.9+</span>
+        <span class="badge badge-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">FastAPI</span>
+        <span class="badge badge-success" style="font-size: 0.85rem; padding: 0.5rem 1rem;">SQLAlchemy 2.0 ORM</span>
+        <span class="badge badge-warning" style="font-size: 0.85rem; padding: 0.5rem 1rem;">SQLite with Multi-Thread Safety</span>
+        <span class="badge badge-info" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Pydantic v2 Validation</span>
+        <span class="badge badge-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Bcrypt & JWT Auth</span>
+        <span class="badge badge-success" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Chart.js Visualizations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="brand" style="justify-content: center; margin-bottom: 1rem;">
+        <div class="brand-icon" style="width: 28px; height: 28px;">
+          <i data-lucide="compass" style="width: 16px; height: 16px;"></i>
+        </div>
+        <span>Penny<span class="accent">Pilot</span></span>
+      </div>
+      <p>PennyPilot — Smart Student Finance Platform • B.Tech Computer Science & Engineering Final Project</p>
+      <p style="margin-top: 0.35rem; font-size: 0.8rem;">Designed for college students across India • INR Currency & Asia/Kolkata Timezone</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

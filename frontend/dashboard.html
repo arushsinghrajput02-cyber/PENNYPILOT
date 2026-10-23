@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — PennyPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand">
+          <div class="brand-icon">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+          </div>
+          <span>Penny<span class="accent">Pilot</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <a href="dashboard.html" class="nav-link active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="transactions.html" class="nav-link">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transactions</span>
+        </a>
+
+        <div class="nav-section-title">Planning & Growth</div>
+        <a href="budgets.html" class="nav-link">
+          <i data-lucide="wallet"></i>
+          <span>Budget Planner</span>
+        </a>
+        <a href="analytics.html" class="nav-link">
+          <i data-lucide="pie-chart"></i>
+          <span>Analytics & Reports</span>
+        </a>
+        <a href="goals.html" class="nav-link">
+          <i data-lucide="target"></i>
+          <span>Savings Goals</span>
+        </a>
+        <a href="challenges.html" class="nav-link">
+          <i data-lucide="shield-check"></i>
+          <span>No-Spend Challenges</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" onclick="seedDemoDataForUser()" style="width: 100%; border-color: rgba(139, 92, 246, 0.4); font-size: 0.8rem;">
+          <i data-lucide="database" style="width: 14px; height: 14px;"></i> Load Sample Data
+        </button>
+
+        <div class="user-profile-pill">
+          <div class="user-avatar" id="sidebarUserAvatar">ST</div>
+          <div class="user-meta">
+            <div class="user-name" id="sidebarUserName">Student</div>
+            <div class="user-role">B.Tech CSE Student</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="logoutUser()" title="Logout" style="padding: 0.35rem; border: none; color: var(--text-muted);">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Navigation -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="btn btn-outline btn-icon-only mobile-menu-btn" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <h1 class="page-title">Dashboard Overview</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="period-selector">
+            <i data-lucide="calendar" style="width: 15px; height: 15px; color: var(--text-dim);"></i>
+            <select class="period-select" id="dashboardMonthSelect">
+              <option value="">Current Month</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary btn-sm" onclick="openModal('quickTransactionModal')">
+            <i data-lucide="plus" style="width: 15px; height: 15px;"></i> Add Transaction
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Body -->
+      <div class="page-body">
+
+        <!-- Feature 2: Survival Mode Banner -->
+        <div class="survival-banner" id="survivalBanner">
+          <div class="survival-info">
+            <div class="survival-icon">
+              <i data-lucide="shield-alert" style="width: 24px; height: 24px;"></i>
+            </div>
+            <div class="survival-text">
+              <h4>Survival Mode Daily Limit</h4>
+              <p id="survivalMessage">Calculating suggested daily spend cap...</p>
+              <div style="font-size: 0.76rem; color: var(--text-dim); margin-top: 0.25rem;" id="survivalExplanation"></div>
+            </div>
+          </div>
+
+          <div class="survival-metrics">
+            <div class="survival-metric-item">
+              <div class="survival-metric-label">Suggested Limit</div>
+              <div class="survival-metric-val" id="survivalDailyLimit">₹0/day</div>
+            </div>
+            <div class="survival-metric-item">
+              <div class="survival-metric-label">Month Days Left</div>
+              <div class="survival-metric-val" id="survivalDaysRemaining" style="color: var(--text-main); font-size: 1.15rem;">—</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('reserveModal')" id="survivalReservedBadge">
+              Reserve: ₹0
+            </button>
+          </div>
+        </div>
+
+        <!-- Top 4 KPI Cards -->
+        <div class="grid-4">
+          <div class="card stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Available Balance</span>
+              <div class="stat-icon success">
+                <i data-lucide="credit-card" style="width: 20px; height: 20px;"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="kpiBalance">₹0.00</div>
+            <div class="stat-footer">Net liquid cash remaining</div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Monthly Income</span>
+              <div class="stat-icon success">
+                <i data-lucide="arrow-down-left" style="width: 20px; height: 20px;"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="kpiIncome" style="color: var(--color-secondary);">₹0.00</div>
+            <div class="stat-footer">Allowance + Stipends</div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Monthly Outflow</span>
+              <div class="stat-icon danger">
+                <i data-lucide="arrow-up-right" style="width: 20px; height: 20px;"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="kpiExpense">₹0.00</div>
+            <div class="stat-footer">Recorded campus expenses</div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Net Savings</span>
+              <div class="stat-icon primary">
+                <i data-lucide="piggy-bank" style="width: 20px; height: 20px;"></i>
+              </div>
+            </div>
+            <div class="stat-value" id="kpiSavings">₹0.00</div>
+            <div class="stat-footer" id="kpiSavingsRate">0% saved</div>
+          </div>
+        </div>
+
+        <!-- Overall Budget Utilization Row -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="wallet" style="width: 17px; height: 17px; color: var(--color-primary);"></i>
+              Monthly Budget Utilization
+            </div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);" id="kpiBudgetUtil">0%</span>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar success" id="kpiBudgetBar" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Trend Chart & Needs vs Wants Grid -->
+        <div class="grid-split">
+          <!-- Monthly Trend Chart -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="bar-chart-2" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+                Monthly Cashflow Trends
+              </div>
+              <span class="badge badge-primary">Past 6 Months</span>
+            </div>
+            <div style="height: 250px; position: relative;">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Feature 3: Needs vs Wants Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="layers" style="width: 18px; height: 18px; color: var(--color-info);"></i>
+                Needs vs Wants
+              </div>
+              <span class="badge badge-info">50/30/20 Rule</span>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-weight: 600;">Needs (Essentials)</span>
+                <span id="nwNeedsPct" style="font-weight: 700; color: #38BDF8;">0%</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" id="nwNeedsBar" style="width: 0%; background: #38BDF8;"></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-weight: 600;">Wants (Discretionary)</span>
+                <span id="nwWantsPct" style="font-weight: 700; color: #F59E0B;">0%</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" id="nwWantsBar" style="width: 0%; background: #F59E0B;"></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-weight: 600;">Allocated Savings</span>
+                <span id="nwSavingsPct" style="font-weight: 700; color: var(--color-secondary);">0%</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" id="nwSavingsBar" style="width: 0%; background: var(--color-secondary);"></div>
+              </div>
+            </div>
+
+            <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 1rem; line-height: 1.4;">
+              💡 Aim for ~50% on essentials (hostel, mess, books), &le;30% on discretionary wants (canteen, cafe, OTT), and &ge;20% into savings.
+            </p>
+          </div>
+        </div>
+
+        <!-- Category Doughnut & Smart Spend Coach Grid -->
+        <div class="grid-split-rev">
+          <!-- Category Spending Doughnut -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="pie-chart" style="width: 18px; height: 18px; color: var(--color-secondary);"></i>
+                Spending by Category
+              </div>
+            </div>
+            <div style="height: 250px; position: relative;">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Feature 1: Smart Spend Coach -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="zap" style="width: 18px; height: 18px; color: #FBBF24;"></i>
+                Smart Spend Coach
+              </div>
+              <span class="badge badge-warning">Rule Engine</span>
+            </div>
+            <div id="insightsContainer" style="max-height: 270px; overflow-y: auto;">
+              <!-- Populated via dashboard.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Score & Month-End Forecast Grid -->
+        <div class="grid-2">
+          <!-- Feature 6: Financial Health Score -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="activity" style="width: 18px; height: 18px; color: var(--color-secondary);"></i>
+                Financial Health Score
+              </div>
+              <span class="badge badge-success" id="healthScoreRating">Calculating...</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 2rem;">
+              <div class="score-circle-wrapper" style="min-width: 130px;">
+                <div class="score-display" id="healthScoreVal">--</div>
+                <div class="score-max">/ 100</div>
+              </div>
+              <div id="healthScoreFactors" style="flex: 1;">
+                <!-- Factors populated via dashboard.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 5: Month-End Forecast -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="trending-up" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+                Month-End Outflow Forecast
+              </div>
+              <span class="badge badge-primary">Run-Rate Pace</span>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-dim); font-weight: 600;">Estimated Total Month Spend</div>
+              <div style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin: 0.3rem 0;" id="forecastProjected">₹0.00</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Average Burn Pace: <strong id="forecastBurnRate" style="color: var(--text-main);">₹0/day</strong>
+              </div>
+            </div>
+
+            <div style="background: var(--bg-surface); padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;" id="forecastNote">
+              Calculating forecast projection...
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions & Recurring Expenses Grid -->
+        <div class="grid-split">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="clock" style="width: 18px; height: 18px;"></i>
+                Recent Transactions
+              </div>
+              <a href="transactions.html" class="btn btn-outline btn-sm">View All</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Tag</th>
+                    <th style="text-align: right;">Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTransactionsTable">
+                  <!-- Populated via dashboard.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recurring Commitments -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="repeat" style="width: 18px; height: 18px; color: var(--color-warning);"></i>
+                Recurring Commitments
+              </div>
+            </div>
+            <div id="recurringList">
+              <!-- Populated via dashboard.js -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Reserve Modal for Survival Mode -->
+  <div class="modal-backdrop" id="reserveModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Configure Emergency Reserve</h3>
+        <button class="modal-close" onclick="closeModal('reserveModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="reserveForm">
+        <div class="modal-body">
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Reserved money is kept completely safe and excluded from your daily spendable balance calculation. Perfect for securing hostel rent, semester fees, or emergency medical funds.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="reserveAmountInput">Emergency Reserve Buffer (INR)</label>
+            <div class="input-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="reserveAmountInput" class="form-control has-prefix" min="0" step="50" placeholder="e.g. 2500" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('reserveModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Reserve Buffer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quick Transaction Modal -->
+  <div class="modal-backdrop" id="quickTransactionModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Quick Add Transaction</h3>
+        <button class="modal-close" onclick="closeModal('quickTransactionModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="quickTransactionForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Transaction Type</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+              <select id="quickTxType" class="form-control" required>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+              <select id="quickTxClassification" class="form-control" required>
+                <option value="need">Need (Essential)</option>
+                <option value="want">Want (Discretionary)</option>
+                <option value="saving">Saving / Investment</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quickTxAmount">Amount (INR)</label>
+            <div class="input-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="quickTxAmount" class="form-control has-prefix" min="1" step="0.5" placeholder="e.g. 150" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quickTxCategory">Category</label>
+            <select id="quickTxCategory" class="form-control" required>
+              <option value="Food & Dining">Food & Dining (Mess, Canteen, Cafe)</option>
+              <option value="Hostel & Rent">Hostel & Rent</option>
+              <option value="Books & Academics">Books & Academics (Xerox, Courses)</option>
+              <option value="Transport & Travel">Transport & Travel (Metro, Auto, Bus)</option>
+              <option value="Tech & Gadgets">Tech & Gadgets</option>
+              <option value="Entertainment">Entertainment (OTT, Movies, Hangouts)</option>
+              <option value="Shopping">Shopping & Lifestyle</option>
+              <option value="Healthcare">Healthcare & Pharmacy</option>
+              <option value="Pocket Money / Allowance">Pocket Money / Allowance</option>
+              <option value="Part-time / Freelance">Part-time / Freelance Stipend</option>
+              <option value="Scholarship / Grants">Scholarship / Grants</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quickTxDesc">Description</label>
+            <input type="text" id="quickTxDesc" class="form-control" placeholder="e.g. Canteen chai & Maggi">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="quickTxDate">Date</label>
+            <input type="date" id="quickTxDate" class="form-control">
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+            <input type="checkbox" id="quickTxRecurring" style="accent-color: var(--color-primary); width: 16px; height: 16px;">
+            <label for="quickTxRecurring" style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+              Tag as recurring monthly expense (e.g. mess bill, rent)
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('quickTransactionModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

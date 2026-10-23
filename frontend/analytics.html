@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Reports — PennyPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="brand">
+          <div class="brand-icon">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+          </div>
+          <span>Penny<span class="accent">Pilot</span></span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Overview</div>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="transactions.html" class="nav-link">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transactions</span>
+        </a>
+
+        <div class="nav-section-title">Planning & Growth</div>
+        <a href="budgets.html" class="nav-link">
+          <i data-lucide="wallet"></i>
+          <span>Budget Planner</span>
+        </a>
+        <a href="analytics.html" class="nav-link active">
+          <i data-lucide="pie-chart"></i>
+          <span>Analytics & Reports</span>
+        </a>
+        <a href="goals.html" class="nav-link">
+          <i data-lucide="target"></i>
+          <span>Savings Goals</span>
+        </a>
+        <a href="challenges.html" class="nav-link">
+          <i data-lucide="shield-check"></i>
+          <span>No-Spend Challenges</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" onclick="seedDemoDataForUser()" style="width: 100%; border-color: rgba(139, 92, 246, 0.4); font-size: 0.8rem;">
+          <i data-lucide="database" style="width: 14px; height: 14px;"></i> Load Sample Data
+        </button>
+
+        <div class="user-profile-pill">
+          <div class="user-avatar" id="sidebarUserAvatar">ST</div>
+          <div class="user-meta">
+            <div class="user-name" id="sidebarUserName">Student</div>
+            <div class="user-role">B.Tech CSE Student</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="logoutUser()" title="Logout" style="padding: 0.35rem; border: none; color: var(--text-muted);">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="btn btn-outline btn-icon-only mobile-menu-btn" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <h1 class="page-title">Financial Analytics & Reports</h1>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="period-selector">
+            <i data-lucide="calendar" style="width: 15px; height: 15px; color: var(--text-dim);"></i>
+            <select class="period-select" id="analyticsMonthSelect">
+              <option value="">Current Month</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- 4 Summary KPI Cards -->
+        <div class="grid-4">
+          <div class="card stat-card">
+            <span class="stat-label">Total Month Inflow</span>
+            <div class="stat-value" id="analyticsTotalIncome" style="color: var(--color-secondary);">₹0</div>
+            <span class="stat-footer">Allowance & stipends</span>
+          </div>
+
+          <div class="card stat-card">
+            <span class="stat-label">Total Outflow</span>
+            <div class="stat-value" id="analyticsTotalExpense" style="color: var(--color-danger);">₹0</div>
+            <span class="stat-footer">Direct expenditures</span>
+          </div>
+
+          <div class="card stat-card">
+            <span class="stat-label">Net Surplus</span>
+            <div class="stat-value" id="analyticsNetSavings" style="color: var(--text-main);">₹0</div>
+            <span class="stat-footer">Inflow − Outflow</span>
+          </div>
+
+          <div class="card stat-card">
+            <span class="stat-label">Savings Rate</span>
+            <div class="stat-value" id="analyticsSavingsRate" style="color: var(--color-primary);">0%</div>
+            <span class="stat-footer">Surplus proportion</span>
+          </div>
+        </div>
+
+        <!-- Charts Grid 1: Category Pie & Needs vs Wants -->
+        <div class="grid-2">
+          <!-- Category Pie Chart -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="pie-chart" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+                Expenditure by Category
+              </div>
+            </div>
+            <div style="height: 290px; position: relative;">
+              <canvas id="analyticsCategoryChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Needs vs Wants Doughnut -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="shield" style="width: 18px; height: 18px; color: var(--color-secondary);"></i>
+                Needs vs Wants Discipline (50/30/20)
+              </div>
+            </div>
+            <div style="height: 290px; position: relative;">
+              <canvas id="analyticsNeedsWantsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trend Line Chart -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="trending-up" style="width: 18px; height: 18px; color: var(--color-secondary);"></i>
+              Multi-Month Inflow vs Outflow History
+            </div>
+            <span class="badge badge-primary">6-Month Trajectory</span>
+          </div>
+          <div style="height: 280px; position: relative;">
+            <canvas id="analyticsTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Detailed Breakdown Table -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-subtle);">
+            <h3 style="font-size: 1.15rem;">Category Spending Audit</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th style="text-align: right;">Amount Spent</th>
+                  <th style="text-align: right;">Share of Outflow</th>
+                  <th style="text-align: right;">Activity Count</th>
+                </tr>
+              </thead>
+              <tbody id="categoryBreakdownTableBody">
+                <!-- Populated via analytics.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>
