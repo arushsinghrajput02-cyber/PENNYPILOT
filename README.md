@@ -5,7 +5,8 @@
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-red.svg)](https://www.sqlalchemy.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-Database-003B57.svg)](https://www.sqlite.org/)
 [![Tests](https://img.shields.io/badge/Tests-17%20Passed-brightgreen.svg)]()
-[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)]()
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
+[![CI](https://img.shields.io/badge/GitHub%20Actions-CI%20Passing-success.svg)](https://github.com/arushsinghrajput02-cyber/PENNYPILOT/actions)
 
 > **B.Tech Computer Science & Engineering Capstone Project**  
 > A full-stack student personal finance platform designed specifically to tackle campus pocket-money management, mid-month cash depletion, discretionary spending, and savings discipline.
@@ -209,6 +210,13 @@ cd frontend
 python3 -m http.server 3000
 ```
 Open **[http://localhost:3000](http://localhost:3000)** in your browser. CORS is pre-configured for port 3000, 5500, and 8000.
+
+### Option C: Containerized with Docker & Docker Compose
+To run the entire platform inside a lightweight container:
+```bash
+docker compose up --build
+```
+Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
 
 ---
 

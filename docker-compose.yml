@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    container_name: pennypilot-app
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=pennypilot-docker-secret-key-college-btech-cse
+      - DATABASE_URL=sqlite:///./pennypilot.db
+      - CORS_ORIGINS=http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - pennypilot_data:/app
+    restart: unless-stopped
+
+volumes:
+  pennypilot_data:
